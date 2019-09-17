@@ -1,9 +1,27 @@
 ---
-title: "report"
+title: "Report"
+
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(fivethirtyeight)
 ```
 
+
+```{r}
+
+
+
+data("congress_age") 
+  
+by_party <- congress_age %>%
+  mutate(year = format(termstart, "%Y")) %>% 
+  filter(party %in% c("R", "D")) %>% 
+  group_by(year, party) %>% 
+  summarise(mean_age = mean(age))
+
+ggplot(by_party, aes(x = year, y = mean_age, group = party, color = party)) + geom_line() + labs(title = "Average Age of Members of Congress", subtitle = "At start of term, 1947-2013", caption = "Caption for the document") + ylim(40, 60) + theme(axis.text.x = element_text(angle = 90))
+```
